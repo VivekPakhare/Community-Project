@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <form class="add-product-form" id="productForm">
+        <h2 class="form-title">Add New Product</h2>
+        
+        <div class="form-group">
+            <label for="product-image">Upload Product Image</label>
+            <input type="file" id="product-image" name="product-image" accept="image/*" required>
+        </div>
+
+        <div class="form-group">
+            <label for="product-name">Product Name</label>
+            <input type="text" id="product-name" name="product-name" placeholder="Enter product name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="product-category">Product Category</label>
+            <select id="product-category" name="product-category" required>
+                <option value="">Select Category</option>
+                <option value="books">Books</option>
+                <option value="vehicles">Vehicles</option>
+                <option value="stationaries">Stationaries</option>
+                <option value="calculators">Calculators</option>
+                <option value="affrons">Affrons</option>
+                <option value="electronics">Electronics</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Condition</label>
+            <div class="condition-group">
+                <select id="condition" name="condition" required>
+                    <option value="">Select Condition</option>
+                    <option value="new">New</option>
+                    <option value="used-like-new">Used - Like New</option>
+                    <option value="used-good">Used - Good</option>
+                    <option value="used-fair">Used - Fair</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" placeholder="Enter product description" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="selling-reason">Reason for Selling</label>
+            <textarea id="selling-reason" name="selling-reason" placeholder="Why are you selling this item?" required></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn">Add Product</button>
+    </form>
+
+    <script src="script.js"></script>
+</body>
+</html>
