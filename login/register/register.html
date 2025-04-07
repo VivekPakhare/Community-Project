@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="rstyle.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
+    <title>Registration Form</title>
+</head>
+<body>
+    <div class="form-container">
+        <div class="form-progress"></div>
+        
+        <div class="form-wrapper">
+            <h1 class="welcome-message">Welcome aboard!</h1>
+            
+            <form class="registration-form" action="/register" method="POST">
+                <!-- CSRF token would go here in a real app -->
+                <input type="hidden" name="csrf_token" value="">
+
+                <div class="form-group active">
+                    <label for="username" class="form-label">
+                        <span class="label-text">Create your username</span>
+                        <input type="text" id="username" name="username" class="form-input" 
+                               placeholder=" " pattern="[^\s]+" required>
+                        <span class="input-border"></span>
+                    </label>
+                    <button type="button" class="next-button" aria-label="Next step">
+                        <span class="next-icon"></span>
+                    </button>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">
+                        <span class="label-text">What's your email?</span>
+                        <input type="email" id="email" name="email" class="form-input"
+                               placeholder=" " pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{1,63}$" required>
+                        <span class="input-border"></span>
+                    </label>
+                    <button type="button" class="next-button" aria-label="Next step">
+                        <span class="next-icon"></span>
+                    </button>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">
+                        <span class="label-text">Create your password</span>
+                        <input type="password" id="password" name="password" class="form-input"
+                               placeholder=" " required minlength="8">
+                        <span class="input-border"></span>
+                    </label>
+                    <button type="submit" class="submit-button" aria-label="Submit registration">
+                        Register
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="register.js"></script>
+</body>
+</html>
