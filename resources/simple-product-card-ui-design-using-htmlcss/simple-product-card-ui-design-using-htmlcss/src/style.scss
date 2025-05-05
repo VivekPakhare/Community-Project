@@ -1,0 +1,162 @@
+// Variables
+$primary-color: #191919;
+$secondary-color: #ffce00;
+$text-color: white;
+$background-color: #212121;
+$transition-time: 0.5s;
+$card-width: 320px;
+$card-height: 480px;
+
+// Mixins
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin card-pseudo($content: "") {
+  content: $content;
+  position: absolute;
+  width: 100%;
+}
+
+// Base Styles
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Istok Web", sans-serif;
+}
+
+body {
+  @include flex-center;
+  min-height: 100vh;
+  background: $background-color;
+  padding: 20px;
+}
+
+.card {
+  position: relative;
+  width: 100%;
+  max-width: $card-width;
+  height: $card-height;
+  background: $primary-color;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+  transition: transform $transition-time;
+
+  &:hover {
+    transform: translateY(-10px);
+  }
+
+  &::before {
+    @include card-pseudo;
+    top: -50%;
+    height: 100%;
+    background: $secondary-color;
+    transform: skewY(345deg);
+    transition: all $transition-time;
+  }
+
+  &:hover::before {
+    top: -70%;
+    transform: skewY(390deg);
+  }
+
+  &::after {
+    @include card-pseudo("CORSAIR");
+    bottom: 0;
+    left: 0;
+    font-weight: 600;
+    font-size: 6em;
+    color: rgba(0, 0, 0, 0.1);
+  }
+}
+
+.imgBox {
+  position: relative;
+  width: 100%;
+  @include flex-center;
+  padding-top: 20px;
+  z-index: 1;
+
+  .mouse {
+    height: 300px;
+    width: auto;
+    transition: transform $transition-time;
+  }
+}
+
+.contentBox {
+  position: relative;
+  padding: 20px;
+  @include flex-center;
+  flex-direction: column;
+  z-index: 2;
+  text-align: center;
+
+  h3 {
+    font-size: 1.125rem;
+    color: $text-color;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+
+  .price {
+    font-size: 1.5rem;
+    color: $text-color;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+  }
+
+  .buy {
+    position: relative;
+    top: 100px;
+    opacity: 0;
+    padding: 10px 30px;
+    color: #000;
+    text-decoration: none;
+    background: $secondary-color;
+    border-radius: 30px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all $transition-time;
+    font-weight: 700;
+
+    &:hover, &:focus {
+      background: darken($secondary-color, 10%);
+      outline: none;
+    }
+  }
+}
+
+// Hover States
+.card:hover {
+  .imgBox .mouse {
+    transform: scale(1.1);
+  }
+
+  .contentBox .buy {
+    top: 0;
+    opacity: 1;
+  }
+}
+
+// Responsive Design
+@media (max-width: 400px) {
+  .card {
+    height: 420px;
+    
+    &::after {
+      font-size: 4em;
+    }
+  }
+
+  .imgBox .mouse {
+    height: 250px;
+  }
+}
