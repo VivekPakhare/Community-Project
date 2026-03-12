@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - CampusCart{% endblock %}
+
+{% block content %}
+<div style="padding-top: 80px;"></div>
+<div class="container" style="padding: 40px 0 80px;">
+    <div class="row justify-content-center g-4">
+        <div class="col-md-8">
+            <div class="reveal" style="background: white; border-radius: var(--radius-lg); border: 1px solid rgba(0,0,0,0.06); padding: 40px;">
+                <h3 style="font-weight: 800; color: var(--dark); letter-spacing: -0.5px; margin-bottom: 24px;">
+                    <i class="bi bi-person-gear me-2" style="color: var(--primary);"></i>Edit Profile
+                </h3>
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label for="{{ field.id_for_label }}" class="form-label" style="font-weight: 600; font-size: 0.85rem;">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                        <div class="invalid-feedback d-block">{% for error in field.errors %}{{ error }}{% endfor %}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    <button type="submit" style="background: var(--gradient-primary); color: white; border: none; padding: 12px 32px; border-radius: 10px; font-weight: 700; transition: var(--transition);">Save Changes</button>
+                </form>
+            </div>
+
+            <div class="reveal delay-1" style="background: white; border-radius: var(--radius-lg); border: 1px solid rgba(0,0,0,0.06); padding: 32px; margin-top: 24px;">
+                <h4 style="font-weight: 700; color: var(--dark); margin-bottom: 20px;">Account Info</h4>
+                <div class="d-flex flex-wrap gap-3">
+                    <div style="background: var(--light); padding: 16px 24px; border-radius: 12px; flex: 1; min-width: 200px;">
+                        <div style="font-size: 0.75rem; color: #a0aec0; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Username</div>
+                        <div style="font-weight: 700; color: var(--dark);">{{ user.username }}</div>
+                    </div>
+                    <div style="background: var(--light); padding: 16px 24px; border-radius: 12px; flex: 1; min-width: 200px;">
+                        <div style="font-size: 0.75rem; color: #a0aec0; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Role</div>
+                        <div style="font-weight: 700; color: var(--dark);">{{ user.get_role_display }}</div>
+                    </div>
+                    <div style="background: var(--light); padding: 16px 24px; border-radius: 12px; flex: 1; min-width: 200px;">
+                        <div style="font-size: 0.75rem; color: #a0aec0; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Status</div>
+                        {% if user.is_verified %}
+                        <span style="background: #dcfce7; color: #166534; padding: 4px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: 700;"><i class="bi bi-check-circle-fill"></i> Verified</span>
+                        {% else %}
+                        <span style="background: #fef3cd; color: #856404; padding: 4px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: 700;">Not Verified</span>
+                        {% endif %}
+                    </div>
+                    <div style="background: var(--light); padding: 16px 24px; border-radius: 12px; flex: 1; min-width: 200px;">
+                        <div style="font-size: 0.75rem; color: #a0aec0; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Joined</div>
+                        <div style="font-weight: 700; color: var(--dark);">{{ user.date_joined|date:"M d, Y" }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.querySelectorAll('input, select, textarea').forEach(el => {
+        if (el.type !== 'hidden' && el.type !== 'submit' && el.type !== 'file') {
+            el.classList.add('form-control');
+            el.style.borderRadius = '10px';
+        }
+        if (el.type === 'file') { el.classList.add('form-control'); el.style.borderRadius = '10px'; }
+    });
+    document.querySelectorAll('select').forEach(el => { el.classList.remove('form-control'); el.classList.add('form-select'); });
+</script>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Users - Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="list-group">
+                <a href="{% url 'admin_dashboard:dashboard' %}" class="list-group-item list-group-item-action"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                <a href="{% url 'admin_dashboard:users' %}" class="list-group-item list-group-item-action active"><i class="bi bi-people"></i> Users</a>
+                <a href="{% url 'admin_dashboard:products' %}" class="list-group-item list-group-item-action"><i class="bi bi-box"></i> Products</a>
+                <a href="{% url 'admin_dashboard:reports' %}" class="list-group-item list-group-item-action"><i class="bi bi-flag"></i> Reports</a>
+                <a href="{% url 'admin_dashboard:analytics' %}" class="list-group-item list-group-item-action"><i class="bi bi-graph-up"></i> Analytics</a>
+            </div>
+        </div>
+        <div class="col-md-10">
+            <h3 class="mb-4">Manage Users</h3>
+            <div class="card">
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead><tr><th>Username</th><th>Email</th><th>College</th><th>Role</th><th>Verified</th><th>Active</th><th>Joined</th><th>Actions</th></tr></thead>
+                        <tbody>
+                            {% for u in users %}
+                            <tr>
+                                <td><a href="{% url 'accounts:public_profile' username=u.username %}">{{ u.username }}</a></td>
+                                <td>{{ u.email }}</td>
+                                <td>{{ u.college|default:"-" }}</td>
+                                <td>{{ u.get_role_display }}</td>
+                                <td>{% if u.is_verified %}<span class="badge bg-success">Yes</span>{% else %}<span class="badge bg-secondary">No</span>{% endif %}</td>
+                                <td>{% if u.is_active %}<span class="badge bg-success">Yes</span>{% else %}<span class="badge bg-danger">No</span>{% endif %}</td>
+                                <td>{{ u.date_joined|date:"M d, Y" }}</td>
+                                <td>
+                                    {% if not u.is_verified %}
+                                    <form method="POST" action="{% url 'admin_dashboard:user_verify' pk=u.pk %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button class="btn btn-sm btn-outline-success" title="Verify"><i class="bi bi-check-circle"></i></button>
+                                    </form>
+                                    {% endif %}
+                                    <form method="POST" action="{% url 'admin_dashboard:user_toggle' pk=u.pk %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button class="btn btn-sm btn-outline-{% if u.is_active %}danger{% else %}success{% endif %}" title="{% if u.is_active %}Deactivate{% else %}Activate{% endif %}">
+                                            <i class="bi bi-{% if u.is_active %}lock{% else %}unlock{% endif %}"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

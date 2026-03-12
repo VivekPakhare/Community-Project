@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - CampusCart{% endblock %}
+
+{% block content %}
+<div style="padding-top: 80px;"></div>
+<div class="container-fluid" style="padding: 24px 40px 80px;">
+    <div class="row g-4">
+        <!-- Sidebar -->
+        <div class="col-lg-2">
+            <div class="admin-sidebar reveal" style="position: sticky; top: 100px;">
+                <div class="list-group">
+                    <a href="{% url 'admin_dashboard:dashboard' %}" class="list-group-item list-group-item-action active">
+                        <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                    </a>
+                    <a href="{% url 'admin_dashboard:users' %}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-people me-2"></i> Users
+                    </a>
+                    <a href="{% url 'admin_dashboard:products' %}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-box me-2"></i> Products
+                    </a>
+                    <a href="{% url 'admin_dashboard:reports' %}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-flag me-2"></i> Reports
+                    </a>
+                    <a href="{% url 'admin_dashboard:analytics' %}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-graph-up me-2"></i> Analytics
+                    </a>
+                    <a href="{% url 'admin:index' %}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-gear me-2"></i> Django Admin
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-10">
+            <h3 class="reveal" style="font-weight: 800; color: var(--dark); letter-spacing: -0.5px; margin-bottom: 24px;">Dashboard Overview</h3>
+
+            <!-- Stats Cards -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <div class="admin-stat-card reveal delay-1" style="background: var(--gradient-primary);">
+                        <h6><i class="bi bi-people-fill me-1"></i> Total Users</h6>
+                        <h2>{{ total_users }}</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="admin-stat-card reveal delay-2" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                        <h6><i class="bi bi-box-fill me-1"></i> Active Products</h6>
+                        <h2>{{ active_products }}</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="admin-stat-card reveal delay-3" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                        <h6><i class="bi bi-bag-fill me-1"></i> Total Orders</h6>
+                        <h2>{{ total_orders }}</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="admin-stat-card reveal delay-4" style="background: var(--gradient-accent);">
+                        <h6><i class="bi bi-flag-fill me-1"></i> Open Reports</h6>
+                        <h2>{{ open_reports }}</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Recent Products -->
+                <div class="col-md-6">
+                    <div class="reveal" style="background: white; border-radius: var(--radius); border: 1px solid rgba(0,0,0,0.06); overflow: hidden;">
+                        <div style="padding: 20px 24px; border-bottom: 1px solid rgba(0,0,0,0.04);">
+                            <h5 style="font-weight: 700; margin: 0; color: var(--dark);">Recent Products</h5>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover mb-0">
+                                <thead><tr style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; color: #718096;"><th>Title</th><th>Seller</th><th>Price</th><th>Status</th></tr></thead>
+                                <tbody>
+                                    {% for p in recent_products %}
+                                    <tr>
+                                        <td style="font-weight: 600;">{{ p.title|truncatewords:5 }}</td>
+                                        <td>{{ p.seller.username }}</td>
+                                        <td style="font-weight: 700; color: var(--primary);">₹{{ p.price }}</td>
+                                        <td><span style="padding: 3px 10px; border-radius: 50px; font-size: 0.72rem; font-weight: 700; {% if p.status == 'active' %}background: #dcfce7; color: #166534;{% else %}background: #f3f4f6; color: #4b5563;{% endif %}">{{ p.status }}</span></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Reports -->
+                <div class="col-md-6">
+                    <div class="reveal delay-1" style="background: white; border-radius: var(--radius); border: 1px solid rgba(0,0,0,0.06); overflow: hidden;">
+                        <div style="padding: 20px 24px; border-bottom: 1px solid rgba(0,0,0,0.04);">
+                            <h5 style="font-weight: 700; margin: 0; color: var(--dark);">Open Reports</h5>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover mb-0">
+                                <thead><tr style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; color: #718096;"><th>Reporter</th><th>Reason</th><th>Date</th><th>Action</th></tr></thead>
+                                <tbody>
+                                    {% for r in recent_reports %}
+                                    <tr>
+                                        <td style="font-weight: 600;">{{ r.reporter.username }}</td>
+                                        <td>{{ r.get_reason_display }}</td>
+                                        <td>{{ r.created_at|date:"M d" }}</td>
+                                        <td>
+                                            <form method="POST" action="{% url 'admin_dashboard:report_resolve' pk=r.pk %}" class="d-inline">
+                                                {% csrf_token %}
+                                                <button style="background: #dcfce7; color: #166534; border: none; padding: 4px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">Resolve</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr><td colspan="4" class="text-center" style="color: #718096; padding: 24px;">No open reports</td></tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

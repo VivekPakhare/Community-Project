@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Reports - Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="list-group">
+                <a href="{% url 'admin_dashboard:dashboard' %}" class="list-group-item list-group-item-action"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                <a href="{% url 'admin_dashboard:users' %}" class="list-group-item list-group-item-action"><i class="bi bi-people"></i> Users</a>
+                <a href="{% url 'admin_dashboard:products' %}" class="list-group-item list-group-item-action"><i class="bi bi-box"></i> Products</a>
+                <a href="{% url 'admin_dashboard:reports' %}" class="list-group-item list-group-item-action active"><i class="bi bi-flag"></i> Reports</a>
+                <a href="{% url 'admin_dashboard:analytics' %}" class="list-group-item list-group-item-action"><i class="bi bi-graph-up"></i> Analytics</a>
+            </div>
+        </div>
+        <div class="col-md-10">
+            <h3 class="mb-4">Reports</h3>
+            <div class="card">
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead><tr><th>ID</th><th>Reporter</th><th>Reported User</th><th>Product</th><th>Reason</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+                        <tbody>
+                            {% for r in reports %}
+                            <tr class="{% if not r.is_resolved %}table-warning{% endif %}">
+                                <td>{{ r.id }}</td>
+                                <td>{{ r.reporter.username }}</td>
+                                <td>{{ r.reported_user.username|default:"-" }}</td>
+                                <td>{% if r.product %}<a href="{% url 'products:detail' pk=r.product.pk %}">{{ r.product.title|truncatewords:3 }}</a>{% else %}-{% endif %}</td>
+                                <td>{{ r.get_reason_display }}</td>
+                                <td>{% if r.is_resolved %}<span class="badge bg-success">Resolved</span>{% else %}<span class="badge bg-warning">Open</span>{% endif %}</td>
+                                <td>{{ r.created_at|date:"M d, Y" }}</td>
+                                <td>
+                                    {% if not r.is_resolved %}
+                                    <form method="POST" action="{% url 'admin_dashboard:report_resolve' pk=r.pk %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button class="btn btn-sm btn-outline-success">Resolve</button>
+                                    </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="8" class="text-center text-muted">No reports</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

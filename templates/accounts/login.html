@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - CampusCart{% endblock %}
+
+{% block content %}
+<section class="auth-page">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5 col-lg-4">
+                <div class="auth-card reveal">
+                    <div class="text-center mb-4">
+                        <div style="width: 64px; height: 64px; background: var(--gradient-primary); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                            <i class="bi bi-box-arrow-in-right" style="font-size: 1.5rem; color: white;"></i>
+                        </div>
+                        <h3 style="font-weight: 800; color: var(--dark); letter-spacing: -0.5px;">Welcome Back</h3>
+                        <p style="color: #718096; font-size: 0.9rem;">Sign in to your account</p>
+                    </div>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="username" class="form-label" style="font-weight: 600; font-size: 0.85rem;">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" required autofocus placeholder="Enter your username">
+                        </div>
+                        <div class="mb-4">
+                            <label for="password" class="form-label" style="font-weight: 600; font-size: 0.85rem;">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required placeholder="Enter your password">
+                        </div>
+                        <button type="submit" class="btn-auth">Sign In <i class="bi bi-arrow-right ms-1"></i></button>
+                    </form>
+                    <div class="text-center mt-4" style="padding-top: 20px; border-top: 1px solid #e2e8f0;">
+                        <p style="color: #718096; font-size: 0.9rem; margin: 0;">Don't have an account? <a href="{% url 'accounts:register' %}" style="color: var(--primary); font-weight: 600; text-decoration: none;">Sign up free</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

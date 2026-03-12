@@ -1,0 +1,359 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}CampusCart - Campus Marketplace{% endblock %}
+
+{% block content %}
+<!-- ===== HERO SECTION (Jeton-style) ===== -->
+<section class="hero-modern" id="hero">
+    <div class="hero-float-shapes">
+        <div class="float-shape float-shape-1"></div>
+        <div class="float-shape float-shape-2"></div>
+        <div class="float-shape float-shape-3"></div>
+    </div>
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7 hero-content">
+                <div class="reveal">
+                    <span class="hero-tagline"><i class="bi bi-lightning-fill"></i> Trusted by students everywhere</span>
+                </div>
+                <h1 class="hero-title reveal delay-1">
+                    Buy &amp; Sell<br>
+                    <span class="text-gradient" data-typed="Textbooks, Electronics, Notes, Gadgets">Textbooks</span><br>
+                    On Campus
+                </h1>
+                <p class="hero-subtitle reveal delay-2">
+                    The easiest way to trade within your college community. Safe, fast, and made for students like you.
+                </p>
+                <div class="hero-search-box reveal delay-3">
+                    <form action="{% url 'products:list' %}" method="GET" class="d-flex w-100">
+                        <input type="text" name="q" placeholder="Search textbooks, electronics, notes...">
+                        <button type="submit"><i class="bi bi-search me-2"></i>Search</button>
+                    </form>
+                </div>
+                <div class="hero-stats reveal delay-4">
+                    <div class="hero-stat">
+                        <div class="hero-stat-number" data-count="5000" data-suffix="+">0</div>
+                        <div class="hero-stat-label">Products Listed</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-number" data-count="2000" data-suffix="+">0</div>
+                        <div class="hero-stat-label">Active Students</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-number" data-count="50" data-suffix="+">0</div>
+                        <div class="hero-stat-label">Colleges</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5 d-none d-lg-block">
+                <div class="reveal-right delay-2" style="text-align: center;">
+                    <div style="background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 24px; padding: 40px 30px; backdrop-filter: blur(12px);">
+                        <img src="{% static 'images/logo.png' %}" alt="CampusCart" style="height: 200px; filter: invert(1);">
+                        <h3 style="color: white; font-weight: 700; margin-top: 20px;">Start Selling Today</h3>
+                        <p style="color: rgba(255,255,255,0.5); font-size: 0.9rem;">List your first product in under 60 seconds</p>
+                        {% if not user.is_authenticated %}
+                        <a href="{% url 'accounts:register' %}" class="btn-cta-primary mt-3" style="display: inline-block;">
+                            Get Started <i class="bi bi-arrow-right"></i>
+                        </a>
+                        {% else %}
+                        <a href="{% url 'products:create' %}" class="btn-cta-primary mt-3" style="display: inline-block;">
+                            List Product <i class="bi bi-arrow-right"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== FEATURED PRODUCTS ===== -->
+{% if featured %}
+<section class="py-5" style="padding: 100px 0 !important;">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-tag reveal"><i class="bi bi-star-fill me-1"></i> Featured</span>
+            <h2 class="section-title reveal delay-1">Handpicked For You</h2>
+            <p class="section-subtitle mx-auto reveal delay-2">Discover top-rated products chosen by our community</p>
+        </div>
+        <div class="row g-4">
+            {% for product in featured %}
+            <div class="col-md-6 col-lg-3">
+                <div class="card-modern reveal delay-{{ forloop.counter }}">
+                    <div class="card-img-wrapper">
+                        {% if product.images.first %}
+                        <img src="{{ product.images.first.image.url }}" alt="{{ product.title }}">
+                        {% else %}
+                        <div class="card-img-placeholder">
+                            <i class="bi bi-image"></i>
+                        </div>
+                        {% endif %}
+                        <span class="card-badge badge-featured-modern">
+                            <i class="bi bi-star-fill me-1"></i> Featured
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.title|truncatewords:5 }}</h5>
+                        <div class="card-price">₹{{ product.price }}</div>
+                        <div class="card-meta mt-2">
+                            <i class="bi bi-geo-alt-fill"></i> {{ product.location|default:"Campus" }}
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'products:detail' pk=product.pk %}" class="btn-card">
+                            View Details <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ===== HOW IT WORKS (Jeton + Phamily step-by-step) ===== -->
+<section class="steps-section" id="how-it-works">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-tag reveal" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(8px);">
+                <i class="bi bi-lightning-fill me-1"></i> Simple Process
+            </span>
+            <h2 class="section-title reveal delay-1" style="color: white;">How It Works</h2>
+            <p class="section-subtitle mx-auto reveal delay-2" style="color: rgba(255,255,255,0.5);">Get started in three simple steps</p>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4">
+                <div class="step-card reveal delay-1" style="position: relative;">
+                    <div class="step-number">01</div>
+                    <div class="step-icon"><i class="bi bi-person-plus-fill"></i></div>
+                    <h4>Create Account</h4>
+                    <p>Sign up with your college email and verify your identity in seconds.</p>
+                    <div class="steps-connector"></div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="step-card reveal delay-2" style="position: relative;">
+                    <div class="step-number">02</div>
+                    <div class="step-icon" style="background: var(--gradient-accent);"><i class="bi bi-camera-fill"></i></div>
+                    <h4>List or Browse</h4>
+                    <p>Post what you want to sell, or discover great deals from fellow students.</p>
+                    <div class="steps-connector"></div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="step-card reveal delay-3">
+                    <div class="step-number">03</div>
+                    <div class="step-icon" style="background: linear-gradient(135deg, #43e97b, #38f9d7);"><i class="bi bi-cash-coin"></i></div>
+                    <h4>Deal &amp; Done</h4>
+                    <p>Chat directly, meet on campus, and complete your transaction safely.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== LATEST PRODUCTS ===== -->
+<section class="py-5" style="padding: 100px 0 !important; background: var(--light);">
+    <div class="container">
+        <div class="d-flex flex-wrap justify-content-between align-items-end mb-5">
+            <div>
+                <span class="section-tag reveal">New Arrivals</span>
+                <h2 class="section-title reveal delay-1">Latest Products</h2>
+            </div>
+            <a href="{% url 'products:list' %}" class="btn-cta-secondary reveal delay-2" style="background: var(--gradient-primary); color: white; border: none; padding: 12px 28px; font-size: 0.9rem;">
+                View All <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+        <div class="row g-4">
+            {% for product in latest_products %}
+            <div class="col-md-6 col-lg-3">
+                <div class="card-modern reveal delay-{{ forloop.counter|add:0 }}">
+                    <div class="card-img-wrapper">
+                        {% if product.images.first %}
+                        <img src="{{ product.images.first.image.url }}" alt="{{ product.title }}">
+                        {% else %}
+                        <div class="card-img-placeholder">
+                            <i class="bi bi-image"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.title|truncatewords:5 }}</h5>
+                        <div class="card-price">₹{{ product.price }}</div>
+                        <div class="card-meta mt-2">
+                            <i class="bi bi-person-fill"></i> {{ product.seller.username }}
+                            &nbsp;&bull;&nbsp;
+                            <i class="bi bi-geo-alt-fill"></i> {{ product.location|default:"Campus" }}
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'products:detail' pk=product.pk %}" class="btn-card">
+                            View Details <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <div class="reveal">
+                    <i class="bi bi-box-seam" style="font-size: 4rem; color: #b0b8c9;"></i>
+                    <h4 class="mt-3" style="color: var(--dark);">No products yet</h4>
+                    <p style="color: #718096;">Be the first to list a product!</p>
+                    <a href="{% url 'products:create' %}" class="btn-cta-primary" style="display: inline-block;">
+                        <i class="bi bi-plus-lg me-1"></i> List a Product
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ===== CATEGORIES (PhamilyPharma tag-style) ===== -->
+<section class="categories-section" id="categories">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-tag reveal">Explore</span>
+            <h2 class="section-title reveal delay-1">Browse by Category</h2>
+            <p class="section-subtitle mx-auto reveal delay-2">Find exactly what you need from our curated categories</p>
+        </div>
+        <div class="d-flex flex-wrap justify-content-center gap-3 reveal delay-3">
+            {% for cat in categories %}
+            <a href="{% url 'products:list' %}?category={{ cat.slug }}" class="category-chip">
+                <i class="bi bi-tag-fill"></i> {{ cat.name }}
+            </a>
+            {% empty %}
+            <p class="text-muted">No categories yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ===== STATS COUNTER (Jeton-style) ===== -->
+<section class="stats-section">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-6 col-md-3">
+                <div class="stat-item reveal">
+                    <div class="stat-number">
+                        <span data-count="5000">0</span><span class="stat-suffix">+</span>
+                    </div>
+                    <div class="stat-label">Products</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item reveal delay-1">
+                    <div class="stat-number">
+                        <span data-count="2000">0</span><span class="stat-suffix">+</span>
+                    </div>
+                    <div class="stat-label">Students</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item reveal delay-2">
+                    <div class="stat-number">
+                        <span data-count="10000">0</span><span class="stat-suffix">+</span>
+                    </div>
+                    <div class="stat-label">Transactions</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item reveal delay-3">
+                    <div class="stat-number">
+                        <span data-count="50">0</span><span class="stat-suffix">+</span>
+                    </div>
+                    <div class="stat-label">Colleges</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== TESTIMONIALS (Jeton-style) ===== -->
+<section class="testimonials-section" id="testimonials">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-tag reveal">Testimonials</span>
+            <h2 class="section-title reveal delay-1">What Students Say</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="testimonial-card reveal delay-1">
+                    <div class="testimonial-stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="testimonial-text">"Sold my old textbooks in just 2 hours! The platform is incredibly easy to use and feels safe since everyone is verified."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">R</div>
+                        <div>
+                            <div class="testimonial-name">Rahul Sharma</div>
+                            <div class="testimonial-role">Computer Science, 3rd Year</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="testimonial-card reveal delay-2">
+                    <div class="testimonial-stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="testimonial-text">"Found a fantastic deal on a barely-used laptop. The messaging system made it easy to negotiate and meet up on campus."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar" style="background: var(--gradient-accent);">P</div>
+                        <div>
+                            <div class="testimonial-name">Priya Patel</div>
+                            <div class="testimonial-role">Engineering, 2nd Year</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="testimonial-card reveal delay-3">
+                    <div class="testimonial-stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i>
+                    </div>
+                    <p class="testimonial-text">"Best platform for students! I've both bought and sold here. The category filters make finding things super quick."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">A</div>
+                        <div>
+                            <div class="testimonial-name">Amit Kumar</div>
+                            <div class="testimonial-role">Business, 4th Year</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== CTA SECTION (Phamily-style) ===== -->
+<section class="cta-section">
+    <div class="container text-center position-relative" style="z-index: 2;">
+        <h2 class="cta-title reveal">
+            Ready to Start<br>Trading on Campus?
+        </h2>
+        <p class="reveal delay-1" style="color: rgba(255,255,255,0.7); font-size: 1.1rem; max-width: 500px; margin: 20px auto 40px;">
+            Join thousands of students already buying and selling safely on CampusCart.
+        </p>
+        <div class="d-flex flex-wrap justify-content-center gap-3 reveal delay-2">
+            {% if not user.is_authenticated %}
+            <a href="{% url 'accounts:register' %}" class="btn-cta-primary">
+                Create Free Account <i class="bi bi-arrow-right"></i>
+            </a>
+            <a href="{% url 'products:list' %}" class="btn-cta-secondary">
+                Browse Products <i class="bi bi-grid-3x3-gap"></i>
+            </a>
+            {% else %}
+            <a href="{% url 'products:create' %}" class="btn-cta-primary">
+                List a Product <i class="bi bi-plus-lg"></i>
+            </a>
+            <a href="{% url 'products:list' %}" class="btn-cta-secondary">
+                Browse Products <i class="bi bi-grid-3x3-gap"></i>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

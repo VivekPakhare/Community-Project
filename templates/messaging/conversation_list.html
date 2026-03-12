@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Messages - CampusCart{% endblock %}
+
+{% block content %}
+<div style="padding-top: 80px;"></div>
+<div class="container" style="padding: 40px 0 80px;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <span class="section-tag reveal"><i class="bi bi-chat-dots me-1"></i> Messages</span>
+            <h2 class="section-title reveal delay-1" style="font-size: 2rem;">Conversations</h2>
+        </div>
+    </div>
+
+    {% for conv in conversations %}
+    <div class="order-card reveal" style="cursor: pointer;" onclick="window.location='{% url 'messaging:detail' pk=conv.pk %}'">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-3">
+                <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--gradient-primary); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1.1rem;">
+                    {% for p in conv.participants.all %}{% if p != user %}{{ p.username|first|upper }}{% endif %}{% endfor %}
+                </div>
+                <div>
+                    <h6 style="font-weight: 700; color: var(--dark); margin-bottom: 2px;">
+                        {% for p in conv.participants.all %}{% if p != user %}{{ p.username }}{% endif %}{% endfor %}
+                    </h6>
+                    {% if conv.product %}
+                    <small style="color: var(--primary); font-size: 0.78rem; font-weight: 600;">Re: {{ conv.product.title|truncatewords:5 }}</small><br>
+                    {% endif %}
+                    {% with last=conv.messages.last %}
+                    {% if last %}
+                    <small style="color: #718096; font-size: 0.82rem;">{{ last.sender.username }}: {{ last.text|truncatewords:8 }}</small>
+                    {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+            <div class="text-end">
+                <small style="color: #a0aec0; font-size: 0.78rem;">{{ conv.updated_at|timesince }} ago</small><br>
+                <a href="{% url 'messaging:detail' pk=conv.pk %}" style="background: var(--gradient-primary); color: white; padding: 6px 18px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; text-decoration: none; display: inline-block; margin-top: 6px;">Open</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="text-center py-5 reveal">
+        <i class="bi bi-chat" style="font-size: 4rem; color: #b0b8c9;"></i>
+        <h5 class="mt-3" style="font-weight: 700; color: var(--dark);">No conversations yet</h5>
+        <p style="color: #718096;">Start a conversation by messaging a seller on their product page.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

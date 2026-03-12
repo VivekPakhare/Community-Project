@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Products - Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="list-group">
+                <a href="{% url 'admin_dashboard:dashboard' %}" class="list-group-item list-group-item-action"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                <a href="{% url 'admin_dashboard:users' %}" class="list-group-item list-group-item-action"><i class="bi bi-people"></i> Users</a>
+                <a href="{% url 'admin_dashboard:products' %}" class="list-group-item list-group-item-action active"><i class="bi bi-box"></i> Products</a>
+                <a href="{% url 'admin_dashboard:reports' %}" class="list-group-item list-group-item-action"><i class="bi bi-flag"></i> Reports</a>
+                <a href="{% url 'admin_dashboard:analytics' %}" class="list-group-item list-group-item-action"><i class="bi bi-graph-up"></i> Analytics</a>
+            </div>
+        </div>
+        <div class="col-md-10">
+            <h3 class="mb-4">Manage Products</h3>
+            <div class="card">
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead><tr><th>Title</th><th>Seller</th><th>Price</th><th>Category</th><th>Status</th><th>Featured</th><th>Date</th><th>Actions</th></tr></thead>
+                        <tbody>
+                            {% for p in products %}
+                            <tr>
+                                <td><a href="{% url 'products:detail' pk=p.pk %}">{{ p.title|truncatewords:5 }}</a></td>
+                                <td>{{ p.seller.username }}</td>
+                                <td>₹{{ p.price }}</td>
+                                <td>{{ p.category.name|default:"-" }}</td>
+                                <td><span class="badge bg-{% if p.status == 'active' %}success{% elif p.status == 'sold' %}info{% else %}secondary{% endif %}">{{ p.status }}</span></td>
+                                <td>{% if p.is_featured %}<span class="badge bg-warning">Yes</span>{% else %}No{% endif %}</td>
+                                <td>{{ p.created_at|date:"M d" }}</td>
+                                <td>
+                                    <form method="POST" action="{% url 'admin_dashboard:product_featured' pk=p.pk %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button class="btn btn-sm btn-outline-warning" title="Toggle featured"><i class="bi bi-star"></i></button>
+                                    </form>
+                                    {% if p.status == 'active' %}
+                                    <form method="POST" action="{% url 'admin_dashboard:product_status' pk=p.pk %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="status" value="removed">
+                                        <button class="btn btn-sm btn-outline-danger" title="Remove"><i class="bi bi-trash"></i></button>
+                                    </form>
+                                    {% else %}
+                                    <form method="POST" action="{% url 'admin_dashboard:product_status' pk=p.pk %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="status" value="active">
+                                        <button class="btn btn-sm btn-outline-success" title="Activate"><i class="bi bi-check-circle"></i></button>
+                                    </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
